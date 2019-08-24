@@ -51,7 +51,8 @@ class App extends Component {
               }
 
               console.log({data})
-              return <div></div>
+              const repositoryCount = data.search.repositoryCount
+              return <h2>GitHub Repositories 検索結果 {repositoryCount}件</h2>
             }
           }
         </Query>
