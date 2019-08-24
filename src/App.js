@@ -30,12 +30,21 @@ class App extends Component {
     })
   }
 
-  goNext(search){
+  goPrevious(search) {
+    this.setState({
+      after: null,
+      before: search.pageInfo.startCursor,
+      first: null,
+      last: PER_PAGE
+    })
+  }
+
+  goNext(search) {
     this.setState({
       after: search.pageInfo.endCursor,
       before: null,
       first: PER_PAGE,
-      last: null,
+      last: null
     })
   }
 
@@ -77,6 +86,12 @@ class App extends Component {
                       })
                     }
                   </ul>
+                  {
+                    search.pageInfo.hasPreviousPage === true ?
+                      <button onClick={this.goPrevious.bind(this, search)}>Previous</button>
+                      :
+                      null
+                  }
                   {
                     search.pageInfo.hasNextPage === true ?
                       <button onClick={this.goNext.bind(this, search)}>
