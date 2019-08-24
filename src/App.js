@@ -5,11 +5,12 @@ import client from './client'
 
 import {SEARCH_REPOSITORIES} from './graphql'
 
+const PER_PAGE = 5
 const DEFAULT_STATE =
   {
     after: null,
     before: null,
-    first: 5,
+    first: PER_PAGE,
     last: null,
     query: 'フロントエンドエンジニア'
   }
@@ -26,6 +27,15 @@ class App extends Component {
     this.setState({
       ...DEFAULT_STATE,
       query: e.target.value
+    })
+  }
+
+  goNext(search){
+    this.setState({
+      after: search.pageInfo.endCursor,
+      before: null,
+      first: PER_PAGE,
+      last: null,
     })
   }
 
@@ -50,13 +60,14 @@ class App extends Component {
                 return `Error! ${error.message}`
               }
 
-              const repositoryCount = data.search.repositoryCount
+              const search = data.search
+              const repositoryCount = search.repositoryCount
               return (
                 <>
                   <h2>GitHub Repositories 検索結果 {repositoryCount}件</h2>
                   <ul>
                     {
-                      data.search.edges.map(edge => {
+                      search.edges.map(edge => {
                         const node = edge.node
                         return (
                           <li key={node.id}>
@@ -66,6 +77,14 @@ class App extends Component {
                       })
                     }
                   </ul>
+                  {
+                    search.pageInfo.hasNextPage === true ?
+                      <button onClick={this.goNext.bind(this, search)}>
+                        Next
+                      </button>
+                      :
+                      null
+                  }
                 </>
               )
             }
